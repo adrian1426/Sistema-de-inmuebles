@@ -1,11 +1,13 @@
 import React from 'react';
-import './App.css';
+import ListaInmuebles from './components/views/ListaInmuebles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import theme from './theme/theme';
 
 function App() {
   return (
-    <div className="App">
-      <h1>Hola amigo</h1>
-    </div>
+    <MuiThemeProvider theme={theme}>
+      <ListaInmuebles />
+    </MuiThemeProvider>
   );
 }
 

@@ -6,6 +6,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import theme from './theme/theme';
 import RegistrarUsuarios from './components/seguridad/RegistrarUsuarios';
+import Login from './components/seguridad/Login';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Switch>
             <Route path="/" exact component={ListaInmuebles} />
             <Route path="/usuarios/registrar" component={RegistrarUsuarios} />
+            <Route path="/usuarios/login" component={Login} />
           </Switch>
         </Grid>
       </MuiThemeProvider>

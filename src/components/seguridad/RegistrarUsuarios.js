@@ -24,7 +24,31 @@ const style = {
 };
 
 class RegistrarUsuarios extends Component {
+
+  state = {
+    usuario: {
+      nombre: '',
+      apellido: '',
+      email: '',
+      password: ''
+    }
+  };
+
+  onChange = e => {
+    const usuario = Object.assign({}, this.state.usuario);
+    usuario[e.target.name] = e.target.value;
+
+    this.setState({ usuario });
+  };
+
+  registrarUsuario = e => {
+    e.preventDefault();
+    console.log('state usuario: ', this.state.usuario);
+  };
+
   render() {
+    const { nombre, apellido, email, password } = this.state.usuario;
+
     return (
       <Container maxWidth="md">
         <div style={style.paper}>
@@ -40,6 +64,8 @@ class RegistrarUsuarios extends Component {
                   name="nombre"
                   fullWidth
                   label="ingrese su nombre"
+                  onChange={this.onChange}
+                  value={nombre}
                 />
               </Grid>
 
@@ -48,6 +74,8 @@ class RegistrarUsuarios extends Component {
                   name="apellido"
                   fullWidth
                   label="ingrese su apellido"
+                  onChange={this.onChange}
+                  value={apellido}
                 />
               </Grid>
 
@@ -56,6 +84,8 @@ class RegistrarUsuarios extends Component {
                   name="email"
                   fullWidth
                   label="ingrese su correo electrónico"
+                  onChange={this.onChange}
+                  value={email}
                 />
               </Grid>
 
@@ -65,6 +95,8 @@ class RegistrarUsuarios extends Component {
                   type="password"
                   fullWidth
                   label="ingrese su password"
+                  onChange={this.onChange}
+                  value={password}
                 />
               </Grid>
             </Grid>
@@ -78,6 +110,7 @@ class RegistrarUsuarios extends Component {
                   size="large"
                   color="primary"
                   style={style.submit}
+                  onClick={this.registrarUsuario}
                 >
                   registrar
                 </Button>

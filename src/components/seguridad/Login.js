@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Avatar, Typography, TextField, Button } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
+import { compose } from 'recompose';
+import { consumerFirebase } from '../../server'
 
 const style = {
   paper: {
@@ -20,6 +22,38 @@ const style = {
 };
 
 class Login extends Component {
+
+  state = {
+    usuario: {
+      email: '',
+      password: ''
+    }
+  };
+
+  onChange = e => {
+    const { name, value } = e.target;
+
+    this.setState({
+      usuario: {
+        ...this.state.usuario,
+        [name]: value
+      }
+    });
+  };
+
+  login = e => {
+    e.preventDefault();
+    const { usuario } = this.state;
+
+    this.props.firebase.auth.signInWithEmailAndPassword(usuario.email, usuario.password)
+      .then(response => {
+        this.props.history.push('/');
+      })
+      .catch(error => {
+        console.log('error login: ', error);
+      });
+  };
+
   render() {
     return (
       <Container maxWidth="xs">
@@ -39,6 +73,7 @@ class Login extends Component {
               name="email"
               fullWidth
               margin="normal"
+              onChange={this.onChange}
             />
 
             <TextField
@@ -48,6 +83,7 @@ class Login extends Component {
               type="password"
               fullWidth
               margin="normal"
+              onChange={this.onChange}
             />
 
             <Button
@@ -55,6 +91,7 @@ class Login extends Component {
               variant="contained"
               color="primary"
               type="submit"
+              onClick={this.login}
             >
               Inicar
             </Button>
@@ -65,4 +102,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default compose(consumerFirebase)(Login);

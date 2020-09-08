@@ -60,14 +60,29 @@ class RegistrarUsuarios extends Component {
     e.preventDefault();
     const { firebase, usuario } = this.state;
 
-    firebase.db.collection('Users').add(usuario)
-      .then(res => {
-        this.setState({
-          usuario: initialUser
-        });
-        console.log('inserción exitosa: ', res);
+    firebase.auth.createUserWithEmailAndPassword(usuario.email, usuario.password)
+      .then(response => {
+
+        const usuarioDB = {
+          usuarioId: response.user.uid,
+          nombre: usuario.nombre,
+          apellido: usuario.apellido,
+          email: usuario.email,
+        };
+
+        firebase.db.collection('Users').add(usuarioDB)
+          .then(res => {
+            this.setState({
+              usuario: initialUser
+            });
+            console.log('inserción exitosa: ', res);
+          })
+          .catch(err => console.log('error: ', err));
+
       })
-      .catch(err => console.log('error: ', err));
+      .catch(error => {
+        console.log('error: ', error);
+      });
   };
 
   render() {

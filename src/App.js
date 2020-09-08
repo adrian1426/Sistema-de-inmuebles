@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import AppNavBar from './components/layout/AppNavBar';
 import ListaInmuebles from './components/views/ListaInmuebles';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
@@ -7,9 +7,21 @@ import Grid from '@material-ui/core/Grid';
 import theme from './theme/theme';
 import RegistrarUsuarios from './components/seguridad/RegistrarUsuarios';
 import Login from './components/seguridad/Login';
+import { FirebaseContext } from './server'
 
 function App() {
-  return (
+  const [authIniciado, setAuthIniciado] = useState(false);
+  const firebase = useContext(FirebaseContext);
+
+  useEffect(() => {
+    firebase.iniciado()
+      .then(val => {
+        setAuthIniciado(val)
+      })
+  });
+
+
+  return authIniciado !== false ? (
     <Router>
       <MuiThemeProvider theme={theme}>
         <AppNavBar />
@@ -24,7 +36,7 @@ function App() {
       </MuiThemeProvider>
     </Router>
 
-  );
+  ) : null;
 }
 
 export default App;

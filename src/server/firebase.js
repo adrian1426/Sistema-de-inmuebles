@@ -21,6 +21,12 @@ class Firebase {
     this.auth = app.auth();
   }
 
+  iniciado() {
+    return new Promise(resolve => {
+      this.auth.onAuthStateChanged(resolve);
+    });
+  };
+
 };
 
 export default Firebase;

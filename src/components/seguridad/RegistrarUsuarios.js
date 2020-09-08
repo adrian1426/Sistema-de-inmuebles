@@ -72,10 +72,7 @@ class RegistrarUsuarios extends Component {
 
         firebase.db.collection('Users').add(usuarioDB)
           .then(res => {
-            this.setState({
-              usuario: initialUser
-            });
-            console.log('inserción exitosa: ', res);
+            this.props.history.push('/');
           })
           .catch(err => console.log('error: ', err));
 

@@ -1,4 +1,16 @@
-const sesionReducer = (state, action) => {
+const initialState = {
+  usuario: {
+    nombre: '',
+    apellido: '',
+    email: '',
+    foto: '',
+    id: '',
+    telefono: ''
+  },
+  autenticado: false
+};
+
+const sesionReducer = (state = initialState, action) => {
 
   switch (action.type) {
     case 'INICIAR_SESION':

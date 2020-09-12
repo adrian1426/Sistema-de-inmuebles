@@ -7,11 +7,14 @@ import Grid from '@material-ui/core/Grid';
 import theme from './theme/theme';
 import RegistrarUsuarios from './components/seguridad/RegistrarUsuarios';
 import Login from './components/seguridad/Login';
-import { FirebaseContext } from './server'
+import { FirebaseContext } from './server';
+import { useStateValue } from './sesion/store';
+import Snackbar from '@material-ui/core/Snackbar';
 
 function App() {
   const [authIniciado, setAuthIniciado] = useState(false);
   const firebase = useContext(FirebaseContext);
+  const [{ snackBarReducer }, dispatch] = useStateValue();
 
   useEffect(() => {
     firebase.iniciado()
@@ -21,20 +24,40 @@ function App() {
   });
 
 
-  return authIniciado !== false ? (
-    <Router>
-      <MuiThemeProvider theme={theme}>
-        <AppNavBar />
+  const handleClose = () => {
+    dispatch({
+      type: 'OPEN_SNACKBAR',
+      payload: {
+        open: false,
+        message: ''
+      }
+    });
+  };
 
-        <Grid container>
-          <Switch>
-            <Route path="/" exact component={ListaInmuebles} />
-            <Route path="/usuarios/registrar" component={RegistrarUsuarios} />
-            <Route path="/usuarios/login" component={Login} />
-          </Switch>
-        </Grid>
-      </MuiThemeProvider>
-    </Router>
+  return authIniciado !== false ? (
+    <React.Fragment>
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={snackBarReducer ? snackBarReducer.open : false}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={snackBarReducer ? snackBarReducer.message : ''}
+      />
+
+      <Router>
+        <MuiThemeProvider theme={theme}>
+          <AppNavBar />
+
+          <Grid container>
+            <Switch>
+              <Route path="/" exact component={ListaInmuebles} />
+              <Route path="/usuarios/registrar" component={RegistrarUsuarios} />
+              <Route path="/usuarios/login" component={Login} />
+            </Switch>
+          </Grid>
+        </MuiThemeProvider>
+      </Router>
+    </React.Fragment>
 
   ) : null;
 }

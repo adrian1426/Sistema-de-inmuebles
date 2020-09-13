@@ -7,12 +7,10 @@ import { StateProvider } from './sesion/store';
 import { mainReducer } from './sesion/reducers';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <FirebaseContext.Provider value={new Firebase()}>
-      <StateProvider initialState={initialState} reducer={mainReducer}>
-        <App />
-      </StateProvider>
-    </FirebaseContext.Provider>
-  </React.StrictMode>,
+  <FirebaseContext.Provider value={new Firebase()}>
+    <StateProvider initialState={initialState} reducer={mainReducer}>
+      <App />
+    </StateProvider>
+  </FirebaseContext.Provider>,
   document.getElementById('root')
 );

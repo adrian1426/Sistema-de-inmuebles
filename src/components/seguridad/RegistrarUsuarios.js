@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { Container, Avatar, Typography, Grid, TextField, Button } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons'
 import { compose } from 'recompose';
-import { consumerFirebase } from '../../server'
+import { consumerFirebase } from '../../server';
+import { crearUsuario } from '../../sesion/actions/sesionAction';
+import { StateContext } from '../../sesion/store';
+import { openSnackBar } from '../../sesion/actions/snackBarAction';
 
 const style = {
   paper: {
@@ -34,6 +37,8 @@ const initialUser = {
 
 class RegistrarUsuarios extends Component {
 
+  static contextType = StateContext;
+
   state = {
     firebase: null,
     usuario: initialUser
@@ -56,30 +61,18 @@ class RegistrarUsuarios extends Component {
     this.setState({ usuario });
   };
 
-  registrarUsuario = e => {
+  registrarUsuario = async e => {
     e.preventDefault();
     const { firebase, usuario } = this.state;
+    const [{ sesionReducer }, dispatch] = this.context;
 
-    firebase.auth.createUserWithEmailAndPassword(usuario.email, usuario.password)
-      .then(response => {
+    const responseRegistrarUsuario = await crearUsuario(dispatch, firebase, usuario);
 
-        const usuarioDB = {
-          usuarioId: response.user.uid,
-          nombre: usuario.nombre,
-          apellido: usuario.apellido,
-          email: usuario.email,
-        };
-
-        firebase.db.collection('Users').add(usuarioDB)
-          .then(res => {
-            this.props.history.push('/');
-          })
-          .catch(err => console.log('error: ', err));
-
-      })
-      .catch(error => {
-        console.log('error: ', error);
-      });
+    if (responseRegistrarUsuario.status) {
+      this.props.history.push('/');
+    } else {
+      openSnackBar(dispatch, { open: true, message: responseRegistrarUsuario.message.message });
+    }
   };
 
   render() {

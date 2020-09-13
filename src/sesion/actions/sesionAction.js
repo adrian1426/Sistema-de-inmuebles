@@ -3,7 +3,7 @@ export const iniciarSesion = (dispatch, firebase, email, password) => {
   return new Promise((resolve, reject) => {
     firebase.auth.signInWithEmailAndPassword(email, password)
       .then(response => {
-        firebase.db.collection('Users').doc(response.user.id).get()
+        firebase.db.collection('Users').doc(response.user.uid).get()
           .then(response => {
             const usuarioDB = response.data();
             dispatch({
@@ -12,11 +12,17 @@ export const iniciarSesion = (dispatch, firebase, email, password) => {
               autenticado: true
             });
 
-            resolve();
+            resolve({ status: true });
           })
-          .catch(error => console.log('error db: ', error));
+          .catch(error => {
+            console.log('error db: ', error);
+            resolve({ status: false, message: error });
+          });
       })
-      .catch(error => console.log('error auth: ', error));
+      .catch(error => {
+        console.log('error auth: ', error);
+        resolve({ status: false, message: error });
+      });
   });
 
 };
@@ -41,11 +47,11 @@ export const crearUsuario = (dispatch, firebase, usuario) => {
               autenticado: true
             });
 
-            resolve();
+            resolve({ status: true });
           })
-          .catch(error => console.log('error db creación usuario: ', error));
+          .catch(error => resolve({ status: false, message: error }));
       })
-      .catch(error => console.log('error crear usuario auth: ', error));
+      .catch(error => resolve({ status: false, message: error }));
   });
 
 };

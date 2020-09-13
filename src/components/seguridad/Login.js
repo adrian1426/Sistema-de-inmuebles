@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { Container, Avatar, Typography, TextField, Button } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
 import { compose } from 'recompose';
-import { consumerFirebase } from '../../server'
+import { consumerFirebase } from '../../server';
+import { iniciarSesion } from '../../sesion/actions/sesionAction';
+import { openSnackBar } from '../../sesion/actions/snackBarAction';
+import { StateContext } from '../../sesion/store';
 
 const style = {
   paper: {
@@ -23,6 +26,8 @@ const style = {
 
 class Login extends Component {
 
+  static contextType = StateContext;
+
   state = {
     usuario: {
       email: '',
@@ -41,17 +46,18 @@ class Login extends Component {
     });
   };
 
-  login = e => {
+  login = async e => {
     e.preventDefault();
     const { usuario } = this.state;
+    const [{ sesionReducer }, dispatch] = this.context;
+    const respuestaSesion = await iniciarSesion(dispatch, this.props.firebase, usuario.email, usuario.password);
 
-    this.props.firebase.auth.signInWithEmailAndPassword(usuario.email, usuario.password)
-      .then(response => {
-        this.props.history.push('/');
-      })
-      .catch(error => {
-        console.log('error login: ', error);
-      });
+    if (respuestaSesion.status) {
+      this.props.history.push('/');
+    } else {
+      openSnackBar(dispatch, { open: true, message: respuestaSesion.message.message });
+    }
+
   };
 
   render() {

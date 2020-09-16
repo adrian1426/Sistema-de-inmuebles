@@ -3,7 +3,7 @@ import snackBarReducer from './snackBarReducer';
 
 export const mainReducer = ({ sesionState, snackState }, action) => {
   return {
-    sesionReducer: sesionReducer(sesionState, action),
-    snackBarReducer: snackBarReducer(snackState, action)
+    sesionState: sesionReducer(sesionState, action),
+    snackState: snackBarReducer(snackState, action)
   }
 };

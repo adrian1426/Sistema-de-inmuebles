@@ -14,7 +14,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 function App() {
   const [authIniciado, setAuthIniciado] = useState(false);
   const firebase = useContext(FirebaseContext);
-  const [{ snackBarReducer }, dispatch] = useStateValue();
+  const [{ snackState }, dispatch] = useStateValue();
 
   useEffect(() => {
     firebase.iniciado()
@@ -38,10 +38,10 @@ function App() {
     <React.Fragment>
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={snackBarReducer ? snackBarReducer.open : false}
+        open={snackState ? snackState.open : false}
         autoHideDuration={3000}
         onClose={handleClose}
-        message={snackBarReducer ? snackBarReducer.message : ''}
+        message={snackState ? snackState.message : ''}
       />
 
       <Router>

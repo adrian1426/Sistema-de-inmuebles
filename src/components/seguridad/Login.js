@@ -49,7 +49,7 @@ class Login extends Component {
   login = async e => {
     e.preventDefault();
     const { usuario } = this.state;
-    const [{ sesionReducer }, dispatch] = this.context;
+    const [{ snackState }, dispatch] = this.context;
     const respuestaSesion = await iniciarSesion(dispatch, this.props.firebase, usuario.email, usuario.password);
 
     if (respuestaSesion.status) {

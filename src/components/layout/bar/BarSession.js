@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { Toolbar, Typography, Button, IconButton, Drawer } from '@material-ui/core';
+import { Toolbar, Typography, Button, IconButton, Drawer, Avatar } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { consumerFirebase } from '../../../server'
 import { compose } from 'recompose';
 import { StateContext } from '../../../sesion/store';
 import { cerrarSesion } from '../../../sesion/actions/sesionAction';
 import MenuDerecha from './MenuDerecha';
+import MenuIzquierda from './MenuIzquierda';
 import fotoUsuario from '../../../assets/naruto.jpg';
 import { withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const styles = theme => ({
   sectionDesktop: {
@@ -44,7 +46,8 @@ class BarSession extends Component {
   static contextType = StateContext;
 
   state = {
-    openRight: false
+    openRight: false,
+    openLeft: false
   };
 
 
@@ -61,8 +64,12 @@ class BarSession extends Component {
     this.setState({ openRight: open });
   };
 
+  toggleDrawerLeft = open => {
+    this.setState({ openLeft: open });
+  };
+
   render() {
-    const { openRight } = this.state;
+    const { openRight, openLeft } = this.state;
     const { classes } = this.props;
     const [{ sesionState }] = this.context;
     const { usuario } = sesionState;
@@ -70,6 +77,22 @@ class BarSession extends Component {
 
     return (
       <div>
+
+        <Drawer
+          open={openLeft}
+          onClose={() => this.toggleDrawerLeft(false)}
+          anchor='left'
+        >
+          <div
+            role="button"
+            onClick={() => this.toggleDrawerLeft(false)}
+            onKeyDown={() => this.toggleDrawerLeft(false)}
+          >
+            <MenuIzquierda
+              classes={classes}
+            />
+          </div>
+        </Drawer>
 
         <Drawer
           open={openRight}
@@ -92,7 +115,7 @@ class BarSession extends Component {
         </Drawer>
 
         <Toolbar>
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={() => this.toggleDrawerLeft(true)}>
             <i className="material-icons">menu</i>
           </IconButton>
 
@@ -102,7 +125,16 @@ class BarSession extends Component {
           <div className={classes.grow}></div>
 
           <div className={classes.sectionDesktop}>
-            <Button color="inherit">Login</Button>
+
+            <IconButton color="inherit" component={Link} to="">
+              <i className="material-icons">mail_outline</i>
+            </IconButton>
+
+            <Button color="inherit" onClick={this.cerrarSesionApp}>Salir</Button>
+
+            <Button color="inherit">{datoUsuario}</Button>
+
+            <Avatar src={fotoUsuario} />
           </div>
 
           <div className={classes.sectionMobile}>
@@ -110,6 +142,7 @@ class BarSession extends Component {
               <i className="material-icons">more_vert</i>
             </IconButton>
           </div>
+
         </Toolbar>
       </div>
     );

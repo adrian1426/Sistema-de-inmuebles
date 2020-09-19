@@ -64,7 +64,7 @@ class RegistrarUsuarios extends Component {
   registrarUsuario = async e => {
     e.preventDefault();
     const { firebase, usuario } = this.state;
-    const [{ sesionState }, dispatch] = this.context;
+    const dispatch = this.context[1];
 
     const responseRegistrarUsuario = await crearUsuario(dispatch, firebase, usuario);
 

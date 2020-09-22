@@ -10,6 +10,7 @@ import Login from './components/seguridad/Login';
 import { FirebaseContext } from './server';
 import { useStateValue } from './sesion/store';
 import Snackbar from '@material-ui/core/Snackbar';
+import RutaAuth from './components/seguridad/RutaAuth';
 
 function App() {
   const [authIniciado, setAuthIniciado] = useState(false);
@@ -50,7 +51,7 @@ function App() {
 
           <Grid container>
             <Switch>
-              <Route path="/" exact component={ListaInmuebles} />
+              <RutaAuth isAutenticatedFirebase={firebase.auth.currentUser} path="/" exact component={ListaInmuebles} />
               <Route path="/usuarios/registrar" component={RegistrarUsuarios} />
               <Route path="/usuarios/login" component={Login} />
             </Switch>

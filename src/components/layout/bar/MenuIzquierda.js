@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Divider, Link, List, ListItem, ListItemText } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { Divider, List, ListItem, ListItemText } from '@material-ui/core';
 
 const MenuIzquierda = props => {
   const { classes } = props;
@@ -8,7 +9,7 @@ const MenuIzquierda = props => {
   return (
     <div className={classes.list}>
       <List>
-        <ListItem component={Link} button to="">
+        <ListItem component={Link} button to="/usuarios/perfil">
           <i className="material-icons">account_box</i>
           <ListItemText classes={{ primary: classes.listItemText }} primary="Perfil" />
         </ListItem>

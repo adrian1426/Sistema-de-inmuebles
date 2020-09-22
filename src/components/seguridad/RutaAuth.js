@@ -7,8 +7,6 @@ const RutaAuth = props => {
   const { component: Component, isAutenticatedFirebase, ...restProps } = props;
   const { autenticado } = useStateValue()[0];
 
-  console.log(autenticado)
-
   return (
     <Route
       {...restProps}

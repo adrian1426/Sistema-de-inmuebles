@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useStateValue } from '../../sesion/store';
 import { Avatar, Button, Container, Grid, TextField, Typography } from '@material-ui/core';
 import foto from '../../assets/naruto.jpg';
+import { FirebaseContext } from '../../server';
 
 const styles = {
   paper: {
@@ -23,6 +24,7 @@ const styles = {
 
 const PerfilUsuario = () => {
   const [{ sesionState }, dispatch] = useStateValue();
+  const firebase = useContext(FirebaseContext);
   const [estado, setEstado] = useState({
     id: '',
     nombre: '',
@@ -31,6 +33,53 @@ const PerfilUsuario = () => {
     telefono: '',
     foto: ''
   });
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+
+    setEstado(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const guardarCambios = e => {
+    e.preventDefault();
+
+    firebase.db.collection('Users').doc(firebase.auth.currentUser.uid).set(estado, { merge: true })
+      .then(success => {
+        dispatch({
+          type: 'INICIAR_SESION',
+          sesion: estado,
+          autenticado: true
+        });
+
+        dispatch({
+          type: 'OPEN_SNACKBAR',
+          payload: {
+            open: true,
+            message: 'Cambios guardados correctamente'
+          }
+        });
+      })
+      .catch(err => {
+        dispatch({
+          type: 'OPEN_SNACKBAR',
+          payload: {
+            open: true,
+            message: 'Error al guardar cambios'
+          }
+        });
+      });
+  };
+
+  useEffect(() => {
+    if (estado.id === "") {
+      if (sesionState) {
+        setEstado(sesionState.usuario)
+      }
+    }
+  }, [estado.id, sesionState]);
 
   return sesionState ?
     <Container component="main" maxWidth="md" justify="center">
@@ -52,15 +101,19 @@ const PerfilUsuario = () => {
                 variant="outlined"
                 fullWidth
                 label="Nombre"
+                onChange={handleChange}
+                value={estado.nombre}
               />
             </Grid>
 
             <Grid item xs={12} md={6}>
               <TextField
-                name="apellidos"
+                name="apellido"
                 variant="outlined"
                 fullWidth
                 label="Apellidos"
+                onChange={handleChange}
+                value={estado.apellido}
               />
             </Grid>
 
@@ -70,6 +123,8 @@ const PerfilUsuario = () => {
                 variant="outlined"
                 fullWidth
                 label="Email"
+                onChange={handleChange}
+                value={estado.email}
               />
             </Grid>
 
@@ -79,6 +134,8 @@ const PerfilUsuario = () => {
                 variant="outlined"
                 fullWidth
                 label="Telefono"
+                onChange={handleChange}
+                value={estado.telefono}
               />
             </Grid>
           </Grid>
@@ -92,6 +149,7 @@ const PerfilUsuario = () => {
                 size="large"
                 color="primary"
                 style={styles.submit}
+                onClick={guardarCambios}
               >
                 Guardar cambios
               </Button>
